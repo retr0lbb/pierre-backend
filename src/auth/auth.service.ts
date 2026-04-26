@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { RegisterUserPayload } from "./dto/register.dto.js";
-import { PrismaService } from "../prisma.service.js";
-import { EncryptService } from "../encrypt/encrypt.service.js";
+import { RegisterUserPayload } from "./dto/register.dto";
+import { PrismaService } from "../prisma.service";
+import { EncryptService } from "../encrypt/encrypt.service";
 
 @Injectable()
 export class AuthService{
@@ -24,7 +24,7 @@ export class AuthService{
             data: {
                 email: payload.email,
                 passwordHash: passwordHash,
-                username: payload.password
+                username: payload.username
             }
         })
 
