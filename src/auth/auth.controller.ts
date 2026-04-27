@@ -1,6 +1,7 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
+import { Body, Controller, HttpCode, HttpStatus, Post, UsePipes } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import type { RegisterUserPayload } from "./dto/register.dto";
+import { type RegisterUserPayload, registerUserPayloadSchema } from "./dto/register.dto";
+import { ZodValidationPipe } from "../shared/pipes/zod-validation.pipe";
 
 @Controller("auth")
 export class AuthController{
@@ -8,6 +9,7 @@ export class AuthController{
     
     @HttpCode(201)
     @Post("/register")
+    @UsePipes(new ZodValidationPipe(registerUserPayloadSchema))
     async createUser(@Body() body: RegisterUserPayload){
         await this.authService.createUser(body)
 
