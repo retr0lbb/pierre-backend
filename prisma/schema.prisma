@@ -22,3 +22,29 @@ model User{
 
   @@map("users")
 }
+
+
+model Product {
+  id String @id @default(uuid())
+  name String
+  slug String @unique
+  description String
+
+  variants ProductVariant[]
+  @@map("products")
+}
+
+model ProductVariant {
+  id String @id @default(nanoid())
+  
+  sku String
+  color String
+  size String
+  price_in_cents Int
+  stock Int
+
+  product Product  @relation(fields: [productId], references: [id])
+  productId String
+
+  @@map("product_variants")
+}
