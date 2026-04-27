@@ -1,0 +1,16 @@
+services:
+  pierre_db:
+    image: bitnami/postgresql:latest
+    container_name: pierre_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRESQL_USERNAME=docker
+      - POSTGRESQL_PASSWORD=docker
+      - POSTGRESQL_DATABASE=pierre
+    volumes:
+      - db_data:/bitnami/postgresql
+    restart: no
+
+volumes:
+  db_data:
