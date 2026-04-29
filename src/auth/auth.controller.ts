@@ -9,8 +9,7 @@ export class AuthController{
     
     @HttpCode(201)
     @Post("/register")
-    @UsePipes(new ZodValidationPipe(registerUserPayloadSchema))
-    async createUser(@Body() body: RegisterUserPayload){
+    async createUser(@Body(new ZodValidationPipe(registerUserPayloadSchema)) body: RegisterUserPayload){
         await this.authService.createUser(body)
 
         return {message: "user created with sucess"}
