@@ -61,6 +61,32 @@ describe("ProductsService", () => {
         it("Should create an product variant if the product already exists", async () => {
 
             const data = {color: "BLACK", price_in_cents: 39900, size: "GG", stock: 100, sku: "CAMI-GG-BLU"} as CreateVariantDTO
+
+            prismaMock.product.findUnique.mockResolvedValue({id: "some"})
+
+            await productService.createProductVariant(data, { productId: "some" })
+
+            expect(prismaMock.productVariant.create).toHaveBeenCalledWith({
+                data: expect.objectContaining({
+                    color: "BLACK",
+                    size: "GG",
+                    stock: 100,
+                    sku: "CAMI-GG-BLU",
+                    price_in_cents: 39900,
+                    productId: "some"
+                })
+            })
+            expect(prismaMock.productVariant.create).toHaveBeenCalled()
+        })
+
+        it("Should not create and variant if the product does not exists", async() => {
+            const data = {color: "BLACK", price_in_cents: 39900, size: "GG", stock: 100, sku: "CAMI-GG-BLU"} as CreateVariantDTO
+
+            prismaMock.product.findUnique.mockResolvedValue(null)
+
+            await expect(
+                productService.createProductVariant(data, { productId: "some" })
+            ).rejects.toThrow("Product not found in database")
         })
     })
 })
