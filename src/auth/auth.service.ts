@@ -1,7 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { RegisterUserPayload } from "./dto/register.dto";
 import { PrismaService } from "../prisma.service";
 import { EncryptService } from "../encrypt/encrypt.service";
+import { LoginUserDTO } from "./dto/login.dto";
 
 @Injectable()
 export class AuthService{
@@ -29,5 +30,23 @@ export class AuthService{
         })
 
         return user
+    }
+
+    async logUser(payload: LoginUserDTO){
+        const foundUser = await this.prismaService.user.findUnique({
+            where: {
+                email: payload.email
+            }
+        })
+
+        if(!foundUser){
+            throw new NotFoundException("User not found or Password not match")
+        }
+
+        const isValid = await this.encrypt.compare(payload.password, foundUser.passwordHash)
+
+        if(!isValid){
+            throw new NotFoundException("User not found or Password not match")
+        }
     }
 }

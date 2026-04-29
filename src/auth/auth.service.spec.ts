@@ -4,22 +4,26 @@ import { RegisterUserPayload } from "./dto/register.dto";
 import { PrismaService } from "../prisma.service";
 import { prismaMock } from "../../prisma/prisma.mock";
 import { EncryptService } from "../encrypt/encrypt.service";
+import { LoginUserDTO } from "./dto/login.dto";
 
 describe("AuthService", () => {
     let authService: AuthService;
+    let encryptService: EncryptService
 
     beforeEach(async () => {
         const moduleRef = await Test.createTestingModule({
-            providers: [AuthService, {
-                provide: PrismaService,
-                useValue: prismaMock
-            }, {
-                provide: EncryptService,
-                useValue: new EncryptService()
-            }],
+            providers: [
+                AuthService, 
+                EncryptService, 
+                {
+                    provide: PrismaService,
+                    useValue: prismaMock
+                }
+            ]
         }).compile();
 
         authService = moduleRef.get(AuthService)
+        encryptService = moduleRef.get(EncryptService)
     });
 
     afterEach(() => {
@@ -58,5 +62,52 @@ describe("AuthService", () => {
                 .rejects
                 .toThrow("an user with this email already exists");
         });
+    })
+
+
+    describe("Login user", () => {
+        it("should login user with correct password", async() => {
+            const data = {email: "jhonDoe@mail.com", password: "12341234"} as LoginUserDTO
+
+            const hashedPassword = await encryptService.hash(data.password);
+
+            prismaMock.user.findUnique.mockResolvedValue({
+                username: "some",
+                email: data.email,
+                id: "some",
+                passwordHash: hashedPassword
+            });
+
+            await authService.logUser(data)
+
+            expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
+                where: {
+                    email: data.email
+                }
+            })
+        })
+        
+
+        it("Should throw not found error if user doesn't exists", async () =>{
+            const data = {email: "jhonDoe@mail.com", password: "12341234"} as LoginUserDTO
+
+            prismaMock.user.findUnique.mockResolvedValue(null)
+
+            await expect(authService.logUser(data)).rejects.toThrow("User not found or Password not match")
+        })
+
+        it("Should return an error if the passwords dont match", async () => {
+            const data = {email: "jhonDoe@mail.com", password: "12341234"} as LoginUserDTO
+            const hashedPassword = await encryptService.hash("12312312");
+
+            prismaMock.user.findUnique.mockResolvedValue({
+                username: "some",
+                email: data.email,
+                id: "some",
+                passwordHash: hashedPassword
+            });
+
+            await expect(authService.logUser(data)).rejects.toThrow("User not found or Password not match")
+        })
     })
 })

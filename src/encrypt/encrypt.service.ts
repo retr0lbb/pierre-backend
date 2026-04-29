@@ -20,18 +20,19 @@ export class EncryptService{
         return passwordHash
     }
 
-    async compare(password: string, hashedPassword: string){
-        const [salt, hash] = password.split(":");
+    async compare(password: string, hashedPassword: string) {
 
-        const deliver_key = (await scryptAsync(password, salt, KEY_LENGTH)) as Buffer;
+        console.log(hashedPassword)
+        const [salt, hash] = hashedPassword.split(":");
 
-        const storageKey = Buffer.from(hash, "hex")
+        const derivedKey = (await scryptAsync(password, salt, KEY_LENGTH)) as Buffer;
 
+        const storedKey = Buffer.from(hash, "hex");
 
-        if(deliver_key.length !== storageKey.length){
+        if (derivedKey.length !== storedKey.length) {
             return false;
         }
 
-        return timingSafeEqual(storageKey, deliver_key);
+        return timingSafeEqual(storedKey, derivedKey);
     }
 }
