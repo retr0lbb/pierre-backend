@@ -12,7 +12,7 @@ import { JwtStrategy } from './strategies/Jwt-strategy.js';
     imports: [
         PassportModule,
         JwtModule.registerAsync({
-            imports: [ConfigModule, ],
+            imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: (config: ConfigService) => ({
                 secret: config.getOrThrow("JWT_SECRET"),

@@ -22,7 +22,6 @@ export class EncryptService{
 
     async compare(password: string, hashedPassword: string) {
 
-        console.log(hashedPassword)
         const [salt, hash] = hashedPassword.split(":");
 
         const derivedKey = (await scryptAsync(password, salt, KEY_LENGTH)) as Buffer;
