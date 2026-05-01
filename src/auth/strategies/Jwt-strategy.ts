@@ -8,7 +8,7 @@ import type { Request } from "express";
 export class JwtStrategy extends PassportStrategy(Strategy){
     constructor(private readonly config: ConfigService){
 
-        const cookieName = config.getOrThrow<string>("COOKIE_NAME")
+        const cookieName = config.getOrThrow<string>("ACCESS_COOKIE_NAME")
         super({
             secretOrKey: config.getOrThrow("JWT_SECRET"),
             jwtFromRequest: ExtractJwt.fromExtractors([

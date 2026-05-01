@@ -8,21 +8,34 @@ import type { Response } from "express";
 export class CookieService{
     constructor (private readonly configService: ConfigService){}
 
-    setAuthCookie(res: Response, token: string){
-        const cookieName = this.configService.getOrThrow<string>("COOKIE_NAME")
+    setAccessCookie(res: Response, token: string){
+        const cookieName = this.configService.getOrThrow<string>("ACCESS_COOKIE_NAME")
         console.log(cookieName)
 
         res.cookie(cookieName, token, {
             httpOnly: true,
-            maxAge: 1000 * 60 * 60,
+            maxAge: 900_000, // five minutes
+            secure: false,
+            signed: false
+        })
+    }
+
+    setRefreshCookie(res: Response, token: string){
+        const cookieName = this.configService.getOrThrow<string>("REFRESH_COOKIE_NAME")
+
+        res.cookie(cookieName, token, {
+            httpOnly: true,
+            maxAge: 604_800_000, // a week
             secure: false,
             signed: false
         })
     }
 
     clearCookies(res: Response){
-        const cookieName = this.configService.getOrThrow("COOKIE_NAME")
+        const accessCookieName = this.configService.getOrThrow("ACCESS_COOKIE_NAME")
+        const refreshCookieName = this.configService.getOrThrow("REFRESH_COOKIE_NAME")
 
-        res.clearCookie(cookieName)
+        res.clearCookie(accessCookieName)
+        res.clearCookie(refreshCookieName)
     }
 }
