@@ -6,6 +6,7 @@ import { PrismaService } from './prisma.service.js';
 import { AuthModule } from './auth/auth.module.js';
 import { EncryptModule } from './encrypt/encrypt.module.js';
 import { ProductsModule } from './products/products.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ProductsModule } from './products/products.module';
     AuthModule,
     EncryptModule,
     ProductsModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
