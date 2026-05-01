@@ -7,6 +7,7 @@ import type { Request, Response } from "express";
 import { CookieService } from "../common/services/cookie.service";
 import { JwtRefreshGuard } from "./guards/jwt-refresh.guard";
 import { ConfigService } from "@nestjs/config";
+import { JwtAuthGuard } from "./guards/jwt.guard";
 
 @Controller("auth")
 export class AuthController{
@@ -47,7 +48,23 @@ export class AuthController{
         this.cookieService.setAccessCookie(res, tokens.accessToken)
         this.cookieService.setRefreshCookie(res, tokens.refreshToken)
 
-        return tokens
+        return {message: "token refreshed"}
+    }
+
+    @Post("/logout")
+    @UseGuards(JwtRefreshGuard)
+    async logout(
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response
+    ){
+        const cookieName = this.configService.getOrThrow("REFRESH_COOKIE_NAME");
+        const refreshToken = req.cookies[cookieName];
+
+        await this.authService.logout(refreshToken);
+
+        this.cookieService.clearCookies(res);
+
+        return { message: "Logged out successfully" };
     }
     
 }

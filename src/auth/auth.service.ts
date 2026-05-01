@@ -138,4 +138,33 @@ export class AuthService{
 
         return tokens
     }
+
+    async logout(token: string){
+        const payload = this.tokenService.verify(token)
+
+        if(payload.type !== "refresh"){
+            throw new UnauthorizedException("Invalid token type")
+        }
+
+        const sessions = await this.prismaService.sessions.findMany({
+            where: {
+                userId: payload.sub,
+                isValid: true,
+            },
+        });
+
+        for (const session of sessions) {
+            const match = await this.encrypt.compare(token, session.token);
+
+            if (match) {
+                await this.prismaService.sessions.update({
+                where: { id: session.id },
+                data: { isValid: false },
+            });
+                return;
+            }
+        }
+
+        return
+    }
 }
