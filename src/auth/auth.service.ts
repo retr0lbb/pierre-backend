@@ -3,14 +3,14 @@ import { RegisterUserPayload } from "./dto/register.dto";
 import { PrismaService } from "../prisma.service";
 import { EncryptService } from "../common/services/encrypt.service";
 import { LoginUserDTO } from "./dto/login.dto";
-import { JwtService } from "@nestjs/jwt";
+import { TokenService } from "../common/services/token.service";
 
 @Injectable()
 export class AuthService{
     constructor(
         private prismaService: PrismaService, 
         private encrypt: EncryptService,
-        private readonly jwtService: JwtService
+        private readonly tokenService: TokenService
     ){}
 
     async createUser(payload: RegisterUserPayload){
@@ -54,15 +54,9 @@ export class AuthService{
             throw new NotFoundException("User not found or Password not match")
         }
 
-        const jwtPayload = {username: user.username, sub: user.id}
+        const accessToken = this.tokenService.generateAccessToken(user.id, user.username)
 
-        const accessToken = this.jwtService.sign({...jwtPayload, type: "access"}, {
-            expiresIn: "60s"
-        })
-
-        const refreshToken = this.jwtService.sign({...jwtPayload, type: "refresh"}, {
-            expiresIn: "1h"
-        })
+        const refreshToken = this.tokenService.generateRefreshToken(user.id, user.username)
 
         await this.prismaService.sessions.create({
             data: {
@@ -76,7 +70,7 @@ export class AuthService{
     }
 
     async refresh(token: string){
-        const tokenPayload = this.jwtService.verify(token)
+        const tokenPayload = this.tokenService.verify(token)
 
         if (tokenPayload.type !== "refresh") {
             throw new UnauthorizedException("Invalid token type")
@@ -123,7 +117,7 @@ export class AuthService{
             throw new UnauthorizedException("session expired")
         }
         
-        const tokens = await this.generateTokens(user.username, user.id)
+        const tokens = this.tokenService.generateTokens(user.username, user.id)
 
         await this.prismaService.sessions.update({
             where: {
@@ -143,19 +137,5 @@ export class AuthService{
         })
 
         return tokens
-    }
-
-    async generateTokens(username: string, id: string){
-        const jwtPayload = {username, sub: id}
-
-        const accessToken = this.jwtService.sign({...jwtPayload, type: "access"}, {
-            expiresIn: "60s"
-        })
-
-        const refreshToken = this.jwtService.sign({...jwtPayload, type: "refresh"}, {
-            expiresIn: "1h"
-        })
-
-        return {accessToken, refreshToken}
     }
 }

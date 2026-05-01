@@ -18,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy){
                         return req.cookies[cookieName];
                     }
                     console.log("Cookie not found")
-                    console.log(req.cookies)
+                    console.log("ITSHERE: ",req.cookies)
                     return null;
                 },
                 ExtractJwt.fromAuthHeaderAsBearerToken()

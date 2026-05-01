@@ -13,6 +13,7 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh-strategy.js';
     imports: [
         PassportModule,
         JwtModule.registerAsync({
+            global: true,
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: (config: ConfigService) => ({
