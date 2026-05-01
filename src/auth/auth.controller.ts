@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, Res, UsePipes } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { type RegisterUserPayload, registerUserPayloadSchema } from "./dto/register.dto";
-import { ZodValidationPipe } from "../shared/pipes/zod-validation.pipe";
+import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
 import { type LoginUserDTO, loginUserSchema } from "./dto/login.dto";
 import type { Response } from "express";
 import { CookieService } from "../common/services/cookie.service";

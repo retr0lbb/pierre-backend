@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { ZodValidationPipe } from '../shared/pipes/zod-validation.pipe';
+import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { type CreateProductDTO, createProductDtoSchema } from './dto/create-product-dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 
