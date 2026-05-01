@@ -3,7 +3,7 @@ import { AuthService } from "./auth.service"
 import { RegisterUserPayload } from "./dto/register.dto";
 import { PrismaService } from "../prisma.service";
 import { prismaMock } from "../../prisma/prisma.mock";
-import { EncryptService } from "../encrypt/encrypt.service";
+import { EncryptService } from "../common/services/encrypt.service";
 import { LoginUserDTO } from "./dto/login.dto";
 import { PassportModule } from "@nestjs/passport";
 import { JwtStrategy } from "./strategies/Jwt-strategy";

@@ -1,7 +1,7 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { RegisterUserPayload } from "./dto/register.dto";
 import { PrismaService } from "../prisma.service";
-import { EncryptService } from "../encrypt/encrypt.service";
+import { EncryptService } from "../common/services/encrypt.service";
 import { LoginUserDTO } from "./dto/login.dto";
 import { JwtService } from "@nestjs/jwt";
 

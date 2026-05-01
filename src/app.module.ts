@@ -4,7 +4,6 @@ import { AppService } from './app.service.js';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaService } from './prisma.service.js';
 import { AuthModule } from './auth/auth.module.js';
-import { EncryptModule } from './encrypt/encrypt.module.js';
 import { ProductsModule } from './products/products.module';
 import { CommonModule } from './common/common.module';
 
@@ -14,7 +13,6 @@ import { CommonModule } from './common/common.module';
       isGlobal: true,
     }),
     AuthModule,
-    EncryptModule,
     ProductsModule,
     CommonModule,
   ],
