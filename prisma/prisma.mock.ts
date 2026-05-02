@@ -1,26 +1,19 @@
 // prisma/prisma.mock.ts
+
+const prismaBasics = {
+  create: jest.fn(),
+  findUnique: jest.fn(),
+  findMany: jest.fn(),
+  update: jest.fn(),
+  delete: jest.fn(),
+}
 export const prismaMock = {
-  user: {
-    create: jest.fn(),
-    findUnique: jest.fn(),
-    findMany: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-  },
+  user: {...prismaBasics},
 
-  product: {
-    create: jest.fn(),
-    findUnique: jest.fn(),
-    findMany: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-  },
+  product: {...prismaBasics},
 
-  productVariant: {
-    create: jest.fn(),
-    findUnique: jest.fn(),
-    findMany: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-  }
+  productVariant: {...prismaBasics},
+
+  sessions: {...prismaBasics}
+
 };

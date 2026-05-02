@@ -23,7 +23,7 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh-strategy.js';
         })
     ],
     controllers: [AuthController],
-    providers: [PrismaService, AuthService, EncryptService, JwtStrategy, JwtRefreshStrategy ],
+    providers: [PrismaService, AuthService, EncryptService, JwtStrategy, JwtRefreshStrategy],
     exports: [JwtStrategy, JwtModule]
 })
 export class AuthModule {}

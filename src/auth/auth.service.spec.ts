@@ -5,34 +5,40 @@ import { PrismaService } from "../prisma.service";
 import { prismaMock } from "../../prisma/prisma.mock";
 import { EncryptService } from "../common/services/encrypt.service";
 import { LoginUserDTO } from "./dto/login.dto";
-import { PassportModule } from "@nestjs/passport";
-import { JwtStrategy } from "./strategies/Jwt-strategy";
-import { JwtService } from "@nestjs/jwt";
+import { TokenService } from "../common/services/token.service";
 
 describe("AuthService", () => {
     let authService: AuthService;
-    let encryptService: EncryptService
+    let encryptService: EncryptService;
+    let tokenService: TokenService
 
     beforeEach(async () => {
-    const moduleRef = await Test.createTestingModule({
-        providers: [
-        AuthService, 
-        EncryptService,
-        {
-            provide: PrismaService,
-            useValue: prismaMock
-        },
-        {
-            provide: JwtService,
-            useValue: {
-            sign: jest.fn().mockReturnValue("fake-token")
-            }
-        }
-        ]
-    }).compile();
+        const moduleRef = await Test.createTestingModule({
+            providers: [
+                AuthService, 
+                EncryptService,
+                {
+                    provide: TokenService,
+                    useValue: {
+                        generateAccessToken: jest.fn().mockReturnValue("access_token"),
+                        generateRefreshToken: jest.fn().mockReturnValue("refresh_token"),
+                        generateTokens: jest.fn().mockReturnValue({
+                            accessToken: "access_token",
+                            refreshToken: "refresh_token",
+                        }),
+                        verify: jest.fn(),
+                    },
+                },
+                {
+                    provide: PrismaService,
+                    useValue: prismaMock
+                }
+            ]
+        }).compile();
 
-    authService = moduleRef.get(AuthService)
-    encryptService = moduleRef.get(EncryptService)
+        authService = moduleRef.get(AuthService)
+        encryptService = moduleRef.get(EncryptService)
+        tokenService = moduleRef.get(TokenService)
     });
 
     afterEach(() => {
