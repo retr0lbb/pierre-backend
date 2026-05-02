@@ -104,7 +104,8 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 - [✅] implement TDD
 - [✅] create a simple register route (no jwt yet)
 - [✅] create controller tests to test tokens 
-- [ ] create email service to validate email
+
 
 - [ ] create RBAC
 - [ ] create Oath2 for google
+- [ ] create email service to validate email

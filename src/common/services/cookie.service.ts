@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import type { Response } from "express";
+import type { Request, Response } from "express";
 
 
 
@@ -38,4 +38,17 @@ export class CookieService{
         res.clearCookie(accessCookieName)
         res.clearCookie(refreshCookieName)
     }
+
+    getTokenFromCookie(req: Request, cookie: "access" | "refresh"){
+        const cookieName = cookie === "access" 
+            ? this.configService.getOrThrow<string>("ACCESS_COOKIE_NAME")
+            : this.configService.getOrThrow<string>("REFRESH_COOKIE_NAME")
+
+        if(req.cookies && req.cookies[cookieName]){
+            return req.cookies[cookieName]
+        }
+        
+        return null
+    }
+
 }

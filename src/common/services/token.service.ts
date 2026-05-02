@@ -1,11 +1,14 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
+import { Request } from "express";
+import { StringFieldUpdateOperationsInput } from "../../generated/prisma/models";
 
 
 type TokenPayload = {
     sub: string,
     username: string,
+    role: "ADMIN" | "USER"
     type: "access" | "refresh"
 }
 
@@ -16,12 +19,13 @@ export class TokenService{
         private readonly configService: ConfigService
     ){}
 
-    generateAccessToken(userId: string, username: string){
+    generateAccessToken(userId: string, username: string, role: "ADMIN" | "USER"){
 
         const accessTokenPayload: TokenPayload = {
             sub: userId,
             username: username,
-            type: "access"
+            type: "access",
+            role
         }
 
         return this.jwtService.sign(accessTokenPayload, {
@@ -30,11 +34,12 @@ export class TokenService{
 
     }
 
-    generateRefreshToken(userId: string, username: string){
+    generateRefreshToken(userId: string, username: string, role: "ADMIN" | "USER"){
         const refreshTokenPayload: TokenPayload = {
             sub: userId,
             username: username,
-            type: "refresh"
+            type: "refresh",
+            role
         }
 
         return this.jwtService.sign(refreshTokenPayload, {
@@ -43,10 +48,10 @@ export class TokenService{
 
     }
 
-    generateTokens(userId: string, username: string) {
+    generateTokens(userId: string, username: string, role: "ADMIN" | "USER") {
         return {
-            accessToken: this.generateAccessToken(userId, username),
-            refreshToken: this.generateRefreshToken(userId, username),
+            accessToken: this.generateAccessToken(userId, username, role),
+            refreshToken: this.generateRefreshToken(userId, username, role),
         };
     }
 

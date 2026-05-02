@@ -44,6 +44,8 @@ export class AuthService{
             }
         })
 
+        console.log(user)
+
         if(!user){
             throw new NotFoundException("User not found or Password not match")
         }
@@ -54,19 +56,17 @@ export class AuthService{
             throw new NotFoundException("User not found or Password not match")
         }
 
-        const accessToken = this.tokenService.generateAccessToken(user.id, user.username)
-
-        const refreshToken = this.tokenService.generateRefreshToken(user.id, user.username)
+        const tokens = this.tokenService.generateTokens(user.id, user.username, user.role)
 
         await this.prismaService.sessions.create({
             data: {
-                token: await this.encrypt.hash(refreshToken),
+                token: await this.encrypt.hash(tokens.refreshToken),
                 expiresAt: new Date(Date.now() + 1000 * 60 * 60),
                 userId: user.id
             }
         })
 
-        return {accessToken, refreshToken}
+        return tokens
     }
 
     async refresh(token: string){
@@ -117,7 +117,7 @@ export class AuthService{
             throw new UnauthorizedException("session expired")
         }
         
-        const tokens = this.tokenService.generateTokens(user.username, user.id)
+        const tokens = this.tokenService.generateTokens(user.username, user.id, user.role)
 
         await this.prismaService.sessions.update({
             where: {

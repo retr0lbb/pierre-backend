@@ -18,12 +18,12 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh-strategy.js';
             inject: [ConfigService],
             useFactory: (config: ConfigService) => ({
                 secret: config.getOrThrow("JWT_SECRET"),
-                signOptions: {expiresIn: "10m"},
+                signOptions: {expiresIn: "15m"},
             })
         })
     ],
     controllers: [AuthController],
     providers: [PrismaService, AuthService, EncryptService, JwtStrategy, JwtRefreshStrategy ],
-    exports: [JwtStrategy]
+    exports: [JwtStrategy, JwtModule]
 })
 export class AuthModule {}

@@ -20,8 +20,15 @@ model User{
   email String @unique
   passwordHash String @map("password_hash")
 
+  role Roles @default(USER)
+
   @@map("users")
   sessions Sessions[]
+}
+
+enum Roles {
+  USER
+  ADMIN
 }
 
 model Sessions {
