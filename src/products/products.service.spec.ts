@@ -89,4 +89,51 @@ describe("ProductsService", () => {
             ).rejects.toThrow("Product not found in database")
         })
     })
+
+    describe("Get All Products", () => {
+        it("should return all products in the correct format", async () => {
+
+            prismaMock.product.findMany.mockResolvedValue([
+                {
+                    name: "Product A",
+                    description: "Description A",
+                    id: "1",
+                    slug: "product-a"
+                }
+            ]);
+
+            prismaMock.product.count.mockResolvedValue(100)
+
+            const result = await productService.getProducts({page: 1, pageSize: 10});
+
+            expect(result).toEqual({
+                data: [
+                    {
+                        id: "1",
+                        name: "Product A",
+                        description: "Description A",
+                        slug: "product-a"
+                    },
+                ],
+                meta: {
+                    total: 100,
+                    perPage: 10,
+                    currentPage: 1,
+                    lastPage: 10
+                }
+            });
+
+
+        });
+
+        it("should return an empty array if no products are found", async () => {
+            prismaMock.product.findMany.mockResolvedValue([]);
+            prismaMock.product.count.mockResolvedValue(0);
+
+            const result = await productService.getProducts({page: 1, pageSize: 10});
+
+            expect(result).toEqual({data: [], meta: {currentPage: 1, lastPage: 0, perPage: 10, total: 0}});
+
+        });
+    });
 })

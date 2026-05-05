@@ -6,6 +6,7 @@ const prismaBasics = {
   findMany: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
+  count: jest.fn()
 }
 export const prismaMock = {
   user: {...prismaBasics},

@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { PrismaService } from "../prisma.service";
 import { CreateProductDTO } from "./dto/create-product-dto";
 import { CreateVariantDTO, CreateVariantParamsDTO } from "./dto/create-variant.dto";
+import { GetProductOptions } from "./dto/get-product-options.dto";
 
 
 @Injectable()
@@ -64,5 +65,53 @@ export class ProductsService{
             }
         })
 
+    }
+
+    async getProducts(options: GetProductOptions){
+
+        const page = Math.max(1, options.page)
+        const pageSize = Math.min(50, options.pageSize)
+
+        const numberOfSkip = (page -1) * pageSize
+
+        const [products, numberOfProducts]  = await Promise.all([
+            this.prismaService.product.findMany({
+                where: {
+                    name: {
+                        contains: options.query,
+                        mode: "insensitive"
+                    }
+                },
+                take: pageSize,
+                skip: numberOfSkip,
+                orderBy: {
+                    name: "asc"
+                }
+            }),
+            this.prismaService.product.count({
+                where: {
+                    name: {
+                        contains: options.query,
+                        mode: "insensitive"
+                    }
+                }
+            })
+        ])
+
+    
+        return {
+            data: products,
+            meta: {
+                total: numberOfProducts,
+                perPage: pageSize,
+                currentPage: page,
+                lastPage: Math.ceil(numberOfProducts / pageSize)
+            }
+        }
+
+    }
+
+    async getProductsVariants(productId: string){
+        throw new Error("Not implemented")
     }
 }
