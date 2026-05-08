@@ -136,4 +136,26 @@ describe("ProductsService", () => {
 
         });
     });
+
+    describe("get product variants", () => {
+        it("should get all products variants if the product exists", async () => {
+            prismaMock.product.findUnique.mockResolvedValue({id: "someId", name: "product name", slug: "product-name", description: "some desc", variants: []})
+            
+            const result = await productService.getProductVariants("someId")
+
+            expect(result).toEqual({product: {
+                id: "someId", 
+                name: "product name", 
+                slug: "product-name", 
+                description: "some desc",
+                variants: []
+            }})
+        })
+
+        it("shoud throw not found error if product doesnot exists", async() => {
+            prismaMock.product.findUnique.mockResolvedValue(null)
+
+            await expect(productService.getProductVariants("null")).rejects.toThrow("Product Not found")
+        })
+    })
 })

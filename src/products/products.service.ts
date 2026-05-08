@@ -111,7 +111,20 @@ export class ProductsService{
 
     }
 
-    async getProductsVariants(productId: string){
-        throw new Error("Not implemented")
+    async getProductVariants(productId: string){
+        const product = await this.prismaService.product.findUnique({
+            where: {
+                id: productId
+            },
+            include: {
+                variants: true
+            }
+        })
+
+        if(!product){
+            throw new NotFoundException("Product Not found")
+        }
+
+        return {product}
     }
 }
