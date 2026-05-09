@@ -69,8 +69,8 @@ export class ProductsService{
 
     async getProducts(options: GetProductOptions){
 
-        const page = Math.max(1, options.page)
-        const pageSize = Math.min(50, options.pageSize)
+        const page = Math.max(1, options.page ?? 0)
+        const pageSize = Math.min(50, options.pageSize ?? 10)
 
         const numberOfSkip = (page -1) * pageSize
 
