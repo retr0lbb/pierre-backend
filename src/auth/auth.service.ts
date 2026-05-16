@@ -118,7 +118,6 @@ export class AuthService{
             throw new UnauthorizedException("Invalid session")
         }
 
-
         if(validSession.expiresAt < new Date()){
             await this.prismaService.sessions.update({
                 where: { id: validSession.id },
@@ -180,7 +179,6 @@ export class AuthService{
     }
 
     async validateGoogleUser(googleUser: {email: string, displayName: string}){
-        console.log(googleUser)
         const user = await this.prismaService.user.findUnique({
             where: {
                 email: googleUser.email
