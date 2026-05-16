@@ -165,4 +165,14 @@ export class AuthService{
 
         return
     }
+
+    async findOrCreateGoogleUser(payload: {
+        googleId: string
+            email: string,
+            firstName: string,
+            lastName: string,
+    }){
+
+        throw new Error("not implemented yet")
+    }
 }

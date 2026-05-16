@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards, UsePipes } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards, UsePipes } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { type RegisterUserPayload, registerUserPayloadSchema } from "./dto/register.dto";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
@@ -8,6 +8,7 @@ import { CookieService } from "../common/services/cookie.service";
 import { JwtRefreshGuard } from "./guards/jwt-refresh.guard";
 import { ConfigService } from "@nestjs/config";
 import { JwtAuthGuard } from "./guards/jwt.guard";
+import { GoogleAuthGuard } from "./guards/google.guard";
 
 @Controller("auth")
 export class AuthController{
@@ -65,6 +66,19 @@ export class AuthController{
         this.cookieService.clearCookies(res);
 
         return { message: "Logged out successfully" };
+    }
+
+    @Get('google')
+    @UseGuards(GoogleAuthGuard)
+    async googleAuth() {
+        // O Passport redireciona automaticamente
+    }
+
+    @Get("google/callback")
+    @UseGuards(GoogleAuthGuard)
+    async googleAuthCallback(@Req() req: Request){
+
+        throw new Error("needs to generate tokens")
     }
     
 }
