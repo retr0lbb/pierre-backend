@@ -29,6 +29,7 @@ export type UserMinAggregateOutputType = {
   username: string | null
   email: string | null
   passwordHash: string | null
+  loginProvider: $Enums.LoginProvider | null
   role: $Enums.Roles | null
 }
 
@@ -37,6 +38,7 @@ export type UserMaxAggregateOutputType = {
   username: string | null
   email: string | null
   passwordHash: string | null
+  loginProvider: $Enums.LoginProvider | null
   role: $Enums.Roles | null
 }
 
@@ -45,6 +47,7 @@ export type UserCountAggregateOutputType = {
   username: number
   email: number
   passwordHash: number
+  loginProvider: number
   role: number
   _all: number
 }
@@ -55,6 +58,7 @@ export type UserMinAggregateInputType = {
   username?: true
   email?: true
   passwordHash?: true
+  loginProvider?: true
   role?: true
 }
 
@@ -63,6 +67,7 @@ export type UserMaxAggregateInputType = {
   username?: true
   email?: true
   passwordHash?: true
+  loginProvider?: true
   role?: true
 }
 
@@ -71,6 +76,7 @@ export type UserCountAggregateInputType = {
   username?: true
   email?: true
   passwordHash?: true
+  loginProvider?: true
   role?: true
   _all?: true
 }
@@ -151,7 +157,8 @@ export type UserGroupByOutputType = {
   id: string
   username: string
   email: string
-  passwordHash: string
+  passwordHash: string | null
+  loginProvider: $Enums.LoginProvider
   role: $Enums.Roles
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
@@ -180,7 +187,8 @@ export type UserWhereInput = {
   id?: Prisma.StringFilter<"User"> | string
   username?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringFilter<"User"> | string
-  passwordHash?: Prisma.StringFilter<"User"> | string
+  passwordHash?: Prisma.StringNullableFilter<"User"> | string | null
+  loginProvider?: Prisma.EnumLoginProviderFilter<"User"> | $Enums.LoginProvider
   role?: Prisma.EnumRolesFilter<"User"> | $Enums.Roles
   sessions?: Prisma.SessionsListRelationFilter
 }
@@ -189,7 +197,8 @@ export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   username?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  passwordHash?: Prisma.SortOrder
+  passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  loginProvider?: Prisma.SortOrder
   role?: Prisma.SortOrder
   sessions?: Prisma.SessionsOrderByRelationAggregateInput
 }
@@ -201,7 +210,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   username?: Prisma.StringFilter<"User"> | string
-  passwordHash?: Prisma.StringFilter<"User"> | string
+  passwordHash?: Prisma.StringNullableFilter<"User"> | string | null
+  loginProvider?: Prisma.EnumLoginProviderFilter<"User"> | $Enums.LoginProvider
   role?: Prisma.EnumRolesFilter<"User"> | $Enums.Roles
   sessions?: Prisma.SessionsListRelationFilter
 }, "id" | "email">
@@ -210,7 +220,8 @@ export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   username?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  passwordHash?: Prisma.SortOrder
+  passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  loginProvider?: Prisma.SortOrder
   role?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -224,7 +235,8 @@ export type UserScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"User"> | string
   username?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
-  passwordHash?: Prisma.StringWithAggregatesFilter<"User"> | string
+  passwordHash?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  loginProvider?: Prisma.EnumLoginProviderWithAggregatesFilter<"User"> | $Enums.LoginProvider
   role?: Prisma.EnumRolesWithAggregatesFilter<"User"> | $Enums.Roles
 }
 
@@ -232,7 +244,8 @@ export type UserCreateInput = {
   id?: string
   username: string
   email: string
-  passwordHash: string
+  passwordHash?: string | null
+  loginProvider?: $Enums.LoginProvider
   role?: $Enums.Roles
   sessions?: Prisma.SessionsCreateNestedManyWithoutUserInput
 }
@@ -241,7 +254,8 @@ export type UserUncheckedCreateInput = {
   id?: string
   username: string
   email: string
-  passwordHash: string
+  passwordHash?: string | null
+  loginProvider?: $Enums.LoginProvider
   role?: $Enums.Roles
   sessions?: Prisma.SessionsUncheckedCreateNestedManyWithoutUserInput
 }
@@ -250,7 +264,8 @@ export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  loginProvider?: Prisma.EnumLoginProviderFieldUpdateOperationsInput | $Enums.LoginProvider
   role?: Prisma.EnumRolesFieldUpdateOperationsInput | $Enums.Roles
   sessions?: Prisma.SessionsUpdateManyWithoutUserNestedInput
 }
@@ -259,7 +274,8 @@ export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  loginProvider?: Prisma.EnumLoginProviderFieldUpdateOperationsInput | $Enums.LoginProvider
   role?: Prisma.EnumRolesFieldUpdateOperationsInput | $Enums.Roles
   sessions?: Prisma.SessionsUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -268,7 +284,8 @@ export type UserCreateManyInput = {
   id?: string
   username: string
   email: string
-  passwordHash: string
+  passwordHash?: string | null
+  loginProvider?: $Enums.LoginProvider
   role?: $Enums.Roles
 }
 
@@ -276,7 +293,8 @@ export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  loginProvider?: Prisma.EnumLoginProviderFieldUpdateOperationsInput | $Enums.LoginProvider
   role?: Prisma.EnumRolesFieldUpdateOperationsInput | $Enums.Roles
 }
 
@@ -284,7 +302,8 @@ export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  loginProvider?: Prisma.EnumLoginProviderFieldUpdateOperationsInput | $Enums.LoginProvider
   role?: Prisma.EnumRolesFieldUpdateOperationsInput | $Enums.Roles
 }
 
@@ -293,6 +312,7 @@ export type UserCountOrderByAggregateInput = {
   username?: Prisma.SortOrder
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
+  loginProvider?: Prisma.SortOrder
   role?: Prisma.SortOrder
 }
 
@@ -301,6 +321,7 @@ export type UserMaxOrderByAggregateInput = {
   username?: Prisma.SortOrder
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
+  loginProvider?: Prisma.SortOrder
   role?: Prisma.SortOrder
 }
 
@@ -309,6 +330,7 @@ export type UserMinOrderByAggregateInput = {
   username?: Prisma.SortOrder
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
+  loginProvider?: Prisma.SortOrder
   role?: Prisma.SortOrder
 }
 
@@ -319,6 +341,14 @@ export type UserScalarRelationFilter = {
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
+export type EnumLoginProviderFieldUpdateOperationsInput = {
+  set?: $Enums.LoginProvider
 }
 
 export type EnumRolesFieldUpdateOperationsInput = {
@@ -343,7 +373,8 @@ export type UserCreateWithoutSessionsInput = {
   id?: string
   username: string
   email: string
-  passwordHash: string
+  passwordHash?: string | null
+  loginProvider?: $Enums.LoginProvider
   role?: $Enums.Roles
 }
 
@@ -351,7 +382,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   id?: string
   username: string
   email: string
-  passwordHash: string
+  passwordHash?: string | null
+  loginProvider?: $Enums.LoginProvider
   role?: $Enums.Roles
 }
 
@@ -375,7 +407,8 @@ export type UserUpdateWithoutSessionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  loginProvider?: Prisma.EnumLoginProviderFieldUpdateOperationsInput | $Enums.LoginProvider
   role?: Prisma.EnumRolesFieldUpdateOperationsInput | $Enums.Roles
 }
 
@@ -383,7 +416,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  loginProvider?: Prisma.EnumLoginProviderFieldUpdateOperationsInput | $Enums.LoginProvider
   role?: Prisma.EnumRolesFieldUpdateOperationsInput | $Enums.Roles
 }
 
@@ -423,6 +457,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   username?: boolean
   email?: boolean
   passwordHash?: boolean
+  loginProvider?: boolean
   role?: boolean
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -433,6 +468,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   username?: boolean
   email?: boolean
   passwordHash?: boolean
+  loginProvider?: boolean
   role?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -441,6 +477,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   username?: boolean
   email?: boolean
   passwordHash?: boolean
+  loginProvider?: boolean
   role?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -449,10 +486,11 @@ export type UserSelectScalar = {
   username?: boolean
   email?: boolean
   passwordHash?: boolean
+  loginProvider?: boolean
   role?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "email" | "passwordHash" | "role", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "email" | "passwordHash" | "loginProvider" | "role", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -469,7 +507,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     id: string
     username: string
     email: string
-    passwordHash: string
+    passwordHash: string | null
+    loginProvider: $Enums.LoginProvider
     role: $Enums.Roles
   }, ExtArgs["result"]["user"]>
   composites: {}
@@ -899,6 +938,7 @@ export interface UserFieldRefs {
   readonly username: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
+  readonly loginProvider: Prisma.FieldRef<"User", 'LoginProvider'>
   readonly role: Prisma.FieldRef<"User", 'Roles'>
 }
     

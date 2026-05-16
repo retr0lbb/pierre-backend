@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { RegisterUserPayload } from "./dto/register.dto";
 import { PrismaService } from "../prisma.service";
 import { EncryptService } from "../common/services/encrypt.service";
@@ -24,13 +24,18 @@ export class AuthService{
             throw new Error("an user with this email already exists")
         }
 
-        const passwordHash = await this.encrypt.hash(payload.password)
+        if(!payload.password && payload.loginProvider !== "GOOGLE"){
+            throw new BadRequestException("You must provide a password")
+        }
+
+        const passwordHash = await this.encrypt.hash(payload.password ?? "") //TODO change this later
 
         const user = await this.prismaService.user.create({
             data: {
                 email: payload.email,
                 passwordHash: passwordHash,
-                username: payload.username
+                username: payload.username,
+                loginProvider: payload.loginProvider
             }
         })
 
@@ -48,7 +53,15 @@ export class AuthService{
             throw new NotFoundException("User not found or Password not match")
         }
 
-        const isValid = await this.encrypt.compare(payload.password, user.passwordHash)
+        if(user.passwordHash == null && user.loginProvider == "GOOGLE"){
+            throw new BadRequestException("Please try login with google again")
+        }
+
+        if(user.passwordHash == null && user.loginProvider == "LOCAL"){
+            throw new Error("An error occurred while creating your account please contact the manager")
+        }
+
+        const isValid = await this.encrypt.compare(payload.password, user.passwordHash ?? "") //TODO change this later
 
         if(!isValid){
             throw new NotFoundException("User not found or Password not match")
@@ -166,13 +179,26 @@ export class AuthService{
         return
     }
 
-    async findOrCreateGoogleUser(payload: {
-        googleId: string
-            email: string,
-            firstName: string,
-            lastName: string,
-    }){
+    async validateGoogleUser(googleUser: {email: string, displayName: string}){
+        console.log(googleUser)
+        const user = await this.prismaService.user.findUnique({
+            where: {
+                email: googleUser.email
+            }
+        })
 
-        throw new Error("not implemented yet")
+        if(user){
+            return user
+        }
+
+        const savedUser = await this.createUser({
+            email: googleUser.email, 
+            username: googleUser.displayName,
+            password: null,
+            loginProvider: "GOOGLE"
+        })
+
+        return savedUser
+
     }
 }

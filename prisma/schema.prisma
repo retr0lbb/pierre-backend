@@ -18,12 +18,17 @@ model User{
   id String @id @default(uuid())
   username String
   email String @unique
-  passwordHash String @map("password_hash")
+  passwordHash String? @map("password_hash")
+  loginProvider LoginProvider @default(LOCAL) @map("login_provider")
 
   role Roles @default(USER)
 
   @@map("users")
   sessions Sessions[]
+}
+enum LoginProvider{
+  GOOGLE
+  LOCAL
 }
 
 enum Roles {
@@ -70,14 +75,14 @@ model ProductVariant {
   @@map("product_variants")
 }
 
-model OrderProducts{
-  id String @id @default(nanoid())
-  orderId
-  productVariantId
-  quantity
+// model OrderProducts{
+//   id String @id @default(nanoid())
+//   orderId
+//   productVariantId
+//   quantity
 
-  status
-}
+//   status
+// }
 
 model Order{
   id String @id @default(uuid())

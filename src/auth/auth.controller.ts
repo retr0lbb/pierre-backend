@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards, UsePipes } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards, UsePipes } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { type RegisterUserPayload, registerUserPayloadSchema } from "./dto/register.dto";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
@@ -9,19 +9,27 @@ import { JwtRefreshGuard } from "./guards/jwt-refresh.guard";
 import { ConfigService } from "@nestjs/config";
 import { JwtAuthGuard } from "./guards/jwt.guard";
 import { GoogleAuthGuard } from "./guards/google.guard";
+import { TokenService } from "../common/services/token.service";
+import { CurrentUser } from "./decorators/current-user";
+import { type GoogleUserPayload } from "../types/auth.types";
 
 @Controller("auth")
 export class AuthController{
     constructor(
-        private authService: AuthService, 
+        private readonly authService: AuthService, 
         private readonly cookieService: CookieService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+        private readonly tokenService: TokenService
     ){}
     
     @HttpCode(201)
     @Post("/register")
     async createUser(@Body(new ZodValidationPipe(registerUserPayloadSchema)) body: RegisterUserPayload){
         await this.authService.createUser(body)
+
+        if(body.loginProvider !== "LOCAL"){
+            throw new BadRequestException("Not correct route to login with google, please try the /google/login route")
+        }
 
         return {message: "user created with sucess"}
     }
@@ -68,17 +76,25 @@ export class AuthController{
         return { message: "Logged out successfully" };
     }
 
-    @Get('google')
+
+    @Get('google/login')
     @UseGuards(GoogleAuthGuard)
-    async googleAuth() {
-        // O Passport redireciona automaticamente
-    }
+    async googleAuth() { }
 
     @Get("google/callback")
     @UseGuards(GoogleAuthGuard)
-    async googleAuthCallback(@Req() req: Request){
+    async googleAuthCallback(@CurrentUser() user: GoogleUserPayload, @Res({passthrough: true}) res: Response){
 
-        throw new Error("needs to generate tokens")
+        if(!user){
+            throw new Error("Error while login with google")
+        }
+
+        const tokens = this.tokenService.generateTokens(user.id, user.username, user.role)
+
+        this.cookieService.setAccessCookie(res, tokens.accessToken)
+        this.cookieService.setRefreshCookie(res, tokens.refreshToken)
+
+        return { message: 'Login realizado com sucesso', userId: user.id }
     }
     
 }

@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/Jwt-strategy.js';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh-strategy.js';
+import { GoogleStrategy } from './strategies/googe.strategy.js';
 
 @Module({
     imports: [
@@ -23,7 +24,7 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh-strategy.js';
         })
     ],
     controllers: [AuthController],
-    providers: [PrismaService, AuthService, EncryptService, JwtStrategy, JwtRefreshStrategy],
+    providers: [PrismaService, AuthService, EncryptService, JwtStrategy, JwtRefreshStrategy, GoogleStrategy],
     exports: [JwtStrategy, JwtModule]
 })
 export class AuthModule {}

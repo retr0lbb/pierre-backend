@@ -9,6 +9,14 @@
 * 🟢 You can import this file directly.
 */
 
+export const LoginProvider = {
+  GOOGLE: 'GOOGLE',
+  LOCAL: 'LOCAL'
+} as const
+
+export type LoginProvider = (typeof LoginProvider)[keyof typeof LoginProvider]
+
+
 export const Roles = {
   USER: 'USER',
   ADMIN: 'ADMIN'
