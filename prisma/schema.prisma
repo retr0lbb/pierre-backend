@@ -69,3 +69,18 @@ model ProductVariant {
 
   @@map("product_variants")
 }
+
+model OrderProducts{
+  id String @id @default(nanoid())
+  orderId
+  productVariantId
+  quantity
+
+  status
+}
+
+model Order{
+  id String @id @default(uuid())
+
+
+}

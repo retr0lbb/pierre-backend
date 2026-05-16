@@ -69,8 +69,8 @@ export class ProductsService{
 
     async getProducts(options: GetProductOptions){
 
-        const page = Math.max(1, options.page)
-        const pageSize = Math.min(50, options.pageSize)
+        const page = Math.max(1, options.page ?? 0)
+        const pageSize = Math.min(50, options.pageSize ?? 10)
 
         const numberOfSkip = (page -1) * pageSize
 
@@ -111,7 +111,20 @@ export class ProductsService{
 
     }
 
-    async getProductsVariants(productId: string){
-        throw new Error("Not implemented")
+    async getProductVariants(productId: string){
+        const product = await this.prismaService.product.findUnique({
+            where: {
+                id: productId
+            },
+            include: {
+                variants: true
+            }
+        })
+
+        if(!product){
+            throw new NotFoundException("Product Not found")
+        }
+
+        return {product}
     }
 }
